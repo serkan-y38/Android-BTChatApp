@@ -1,4 +1,4 @@
-package com.yilmaz.bt_chat.ui.theme
+package com.yilmaz.bt_chat.core.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

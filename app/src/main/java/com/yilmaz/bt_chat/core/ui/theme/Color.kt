@@ -1,4 +1,4 @@
-package com.yilmaz.bt_chat.ui.theme
+package com.yilmaz.bt_chat.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

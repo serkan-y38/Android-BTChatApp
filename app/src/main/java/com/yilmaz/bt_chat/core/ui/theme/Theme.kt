@@ -1,4 +1,4 @@
-package com.yilmaz.bt_chat.ui.theme
+package com.yilmaz.bt_chat.core.ui.theme
 
 import android.app.Activity
 import android.os.Build
