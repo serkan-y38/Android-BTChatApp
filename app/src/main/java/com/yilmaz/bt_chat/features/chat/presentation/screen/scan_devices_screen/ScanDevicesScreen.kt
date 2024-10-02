@@ -23,7 +23,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavGraph
+import com.yilmaz.bt_chat.core.navigation.NavigationGraph
 import com.yilmaz.bt_chat.features.chat.domain.chat.BluetoothDeviceDomain
+import com.yilmaz.bt_chat.features.chat.presentation.screen.bluetooth_chat_screen.ScreenBTChat
 
 @Composable
 fun ScanDevicesScreen(
@@ -71,7 +74,9 @@ fun ScanDevicesScreen(
                         Text(text = "Connecting...")
                     }
                 }
-
+                state.isConnected -> {
+                    ScreenBTChat(navHostController, viewModel)
+                }
                 else -> {
                     BluetoothDeviceList(
                         pairedDevices = state.pairedDevices,
