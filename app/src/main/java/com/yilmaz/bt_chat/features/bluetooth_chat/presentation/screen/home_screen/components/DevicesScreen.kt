@@ -1,4 +1,4 @@
-package com.yilmaz.bt_chat.features.chat.presentation.screen.home_screen.components
+package com.yilmaz.bt_chat.features.bluetooth_chat.presentation.screen.home_screen.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,14 +17,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.yilmaz.bt_chat.features.chat.domain.chat.BluetoothDeviceDomain
+import com.yilmaz.bt_chat.features.bluetooth_chat.domain.chat.model.BluetoothDeviceModel
 
 @Composable
 fun DevicesScreen(
-    pairedDevices: List<BluetoothDeviceDomain>,
-    scannedDevices: List<BluetoothDeviceDomain>,
-    onPairedDevicesItemClick: (BluetoothDeviceDomain) -> Unit,
-    onScannedDevicesItemClick: (BluetoothDeviceDomain) -> Unit,
+    pairedDevices: List<BluetoothDeviceModel>,
+    scannedDevices: List<BluetoothDeviceModel>,
+    onPairedDevicesItemClick: (BluetoothDeviceModel) -> Unit,
+    onScannedDevicesItemClick: (BluetoothDeviceModel) -> Unit,
     onStartScan: () -> Unit,
     onStopScan: () -> Unit,
     onStartServer: () -> Unit,

@@ -1,10 +1,10 @@
-package com.yilmaz.bt_chat.features.chat.presentation.screen.home_screen
+package com.yilmaz.bt_chat.features.bluetooth_chat.presentation.screen.home_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yilmaz.bt_chat.features.chat.domain.chat.BluetoothController
-import com.yilmaz.bt_chat.features.chat.domain.chat.BluetoothDeviceDomain
-import com.yilmaz.bt_chat.features.chat.domain.chat.ConnectionResult
+import com.yilmaz.bt_chat.features.bluetooth_chat.domain.chat.BluetoothController
+import com.yilmaz.bt_chat.features.bluetooth_chat.domain.chat.model.BluetoothDeviceModel
+import com.yilmaz.bt_chat.features.bluetooth_chat.domain.chat.ConnectionResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -45,10 +45,17 @@ class HomeViewModel @Inject constructor(
     private var deviceConnectionJob: Job? = null
 
     init {
+        isConnected()
+        getErrors()
+    }
+
+    private fun isConnected() {
         btController.isConnected.onEach { isConnected ->
             _state.update { it.copy(isConnected = isConnected) }
         }.launchIn(viewModelScope)
+    }
 
+    private fun getErrors() {
         btController.errors.onEach { error ->
             _state.update {
                 it.copy(
@@ -58,7 +65,22 @@ class HomeViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun connectToDevice(device: BluetoothDeviceDomain) {
+    fun startScan() {
+        btController.startScan()
+    }
+
+    fun stopScan() {
+        btController.stopScan()
+    }
+
+    fun startBluetoothServer() {
+        _state.update { it.copy(isServerStarted = true) }
+        deviceConnectionJob = btController
+            .startBluetoothServer()
+            .listen()
+    }
+
+    fun connectToDevice(device: BluetoothDeviceModel) {
         _state.update { it.copy(isConnecting = true) }
         deviceConnectionJob = btController
             .connectToDevice(device)
@@ -77,19 +99,17 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun waitForIncomingConnections() {
-        _state.update { it.copy(isServerStarted = true) }
-        deviceConnectionJob = btController
-            .startBluetoothServer()
-            .listen()
-    }
-
-    fun startScan() {
-        btController.startDiscovery()
-    }
-
-    fun stopScan() {
-        btController.stopDiscovery()
+    fun sendMessage(message: String) {
+        viewModelScope.launch {
+            val bluetoothMessage = btController.sendMessage(message)
+            if (bluetoothMessage != null) {
+                _state.update {
+                    it.copy(
+                        messages = it.messages + bluetoothMessage
+                    )
+                }
+            }
+        }
     }
 
     private fun Flow<ConnectionResult>.listen(): Job {
@@ -100,6 +120,7 @@ class HomeViewModel @Inject constructor(
                         it.copy(
                             isConnected = true,
                             isConnecting = false,
+                            isServerStarted = false,
                             errorMessage = null
                         )
                     }
@@ -124,29 +145,18 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
-            .catch { throwable ->
+            .catch { e ->
                 btController.closeConnection()
                 _state.update {
                     it.copy(
                         isConnected = false,
                         isConnecting = false,
+                        isServerStarted = false,
+                        errorMessage = e.message
                     )
                 }
             }
             .launchIn(viewModelScope)
-    }
-
-    fun sendMessage(message: String) {
-        viewModelScope.launch {
-            val bluetoothMessage = btController.trySendMessage(message)
-            if (bluetoothMessage != null) {
-                _state.update {
-                    it.copy(
-                        messages = it.messages + bluetoothMessage
-                    )
-                }
-            }
-        }
     }
 
     override fun onCleared() {

@@ -1,4 +1,4 @@
-package com.yilmaz.bt_chat.features.chat.presentation.screen.home_screen.components
+package com.yilmaz.bt_chat.features.bluetooth_chat.presentation.screen.home_screen.components
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text

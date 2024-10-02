@@ -1,8 +1,8 @@
-package com.yilmaz.bt_chat.features.chat.di
+package com.yilmaz.bt_chat.features.bluetooth_chat.di
 
 import android.content.Context
-import com.yilmaz.bt_chat.features.chat.data.chat.BluetoothControllerImpl
-import com.yilmaz.bt_chat.features.chat.domain.chat.BluetoothController
+import com.yilmaz.bt_chat.features.bluetooth_chat.data.BluetoothControllerImpl
+import com.yilmaz.bt_chat.features.bluetooth_chat.domain.chat.BluetoothController
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

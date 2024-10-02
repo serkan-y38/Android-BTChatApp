@@ -1,8 +1,8 @@
-package com.yilmaz.bt_chat.features.chat.data.chat
+package com.yilmaz.bt_chat.features.bluetooth_chat.data
 
 import android.bluetooth.BluetoothSocket
-import com.yilmaz.bt_chat.features.chat.domain.chat.BluetoothMessage
-import com.yilmaz.bt_chat.features.chat.domain.chat.TransferFailedException
+import com.yilmaz.bt_chat.features.bluetooth_chat.data.mappers.jsonToBluetoothMessageModel
+import com.yilmaz.bt_chat.features.bluetooth_chat.domain.chat.model.BluetoothMessageModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -13,24 +13,24 @@ import java.io.IOException
 class BluetoothDataTransferService(
     private val socket: BluetoothSocket
 ) {
-    fun listenForIncomingMessages(): Flow<BluetoothMessage> {
+    fun listenForIncomingMessages(): Flow<BluetoothMessageModel> {
         return flow {
-            if(!socket.isConnected) {
-                return@flow
-            }
+            if (!socket.isConnected) return@flow
+
             val buffer = ByteArray(1024)
-            while(true) {
+
+            while (true) {
                 val byteCount = try {
                     socket.inputStream.read(buffer)
-                } catch(e: IOException) {
-                    throw TransferFailedException()
+                } catch (e: IOException) {
+                    throw IOException("Reading incoming data failed")
                 }
 
                 emit(
-                    buffer.decodeToString(
-                        endIndex = byteCount
-                    ).toBluetoothMessage(
-                        isFromLocalUser = false
+                    jsonToBluetoothMessageModel(
+                        buffer.decodeToString(
+                            endIndex = byteCount
+                        )
                     )
                 )
             }
@@ -41,7 +41,7 @@ class BluetoothDataTransferService(
         return withContext(Dispatchers.IO) {
             try {
                 socket.outputStream.write(bytes)
-            } catch(e: IOException) {
+            } catch (e: IOException) {
                 e.printStackTrace()
                 return@withContext false
             }

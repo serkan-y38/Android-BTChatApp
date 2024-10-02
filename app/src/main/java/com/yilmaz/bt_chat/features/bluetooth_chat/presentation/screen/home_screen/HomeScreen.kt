@@ -1,4 +1,4 @@
-package com.yilmaz.bt_chat.features.chat.presentation.screen.home_screen
+package com.yilmaz.bt_chat.features.bluetooth_chat.presentation.screen.home_screen
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
@@ -13,10 +13,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.yilmaz.bt_chat.features.chat.presentation.screen.home_screen.components.ChatScreen
-import com.yilmaz.bt_chat.features.chat.presentation.screen.home_screen.components.DevicesScreen
-import com.yilmaz.bt_chat.features.chat.presentation.screen.home_screen.components.ConnectingDialog
-import com.yilmaz.bt_chat.features.chat.presentation.screen.home_screen.components.StartServerDialog
+import com.yilmaz.bt_chat.features.bluetooth_chat.presentation.screen.home_screen.components.ChatScreen
+import com.yilmaz.bt_chat.features.bluetooth_chat.presentation.screen.home_screen.components.DevicesScreen
+import com.yilmaz.bt_chat.features.bluetooth_chat.presentation.screen.home_screen.components.ConnectingDialog
+import com.yilmaz.bt_chat.features.bluetooth_chat.presentation.screen.home_screen.components.StartServerDialog
 
 @Composable
 fun HomeScreen(
@@ -75,7 +75,7 @@ fun HomeScreen(
                         onStartScan = { viewModel.startScan() },
                         onStopScan = { viewModel.stopScan() },
                         onStartServer = {
-                            viewModel.waitForIncomingConnections()
+                            viewModel.startBluetoothServer()
                         }
                     )
                 }

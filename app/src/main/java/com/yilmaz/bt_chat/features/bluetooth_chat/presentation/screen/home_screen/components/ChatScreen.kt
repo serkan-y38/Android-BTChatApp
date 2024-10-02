@@ -1,4 +1,4 @@
-package com.yilmaz.bt_chat.features.chat.presentation.screen.home_screen.components
+package com.yilmaz.bt_chat.features.bluetooth_chat.presentation.screen.home_screen.components
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -14,12 +14,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -31,9 +30,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.yilmaz.bt_chat.features.chat.domain.chat.BluetoothMessage
-import com.yilmaz.bt_chat.features.chat.presentation.screen.home_screen.HomeState
+import com.yilmaz.bt_chat.features.bluetooth_chat.domain.chat.model.BluetoothMessageModel
+import com.yilmaz.bt_chat.features.bluetooth_chat.presentation.screen.home_screen.HomeState
 
 @Composable
 fun ChatScreen(
@@ -106,7 +104,7 @@ fun ChatScreen(
                 keyboardController?.hide()
             }) {
                 Icon(
-                    imageVector = Icons.Default.Send,
+                    imageVector = Icons.AutoMirrored.Filled.Send,
                     contentDescription = "Send message"
                 )
             }
@@ -116,7 +114,7 @@ fun ChatScreen(
 
 @Composable
 fun MessageItem(
-    message: BluetoothMessage,
+    message: BluetoothMessageModel,
     modifier: Modifier = Modifier
 ) {
     Column(

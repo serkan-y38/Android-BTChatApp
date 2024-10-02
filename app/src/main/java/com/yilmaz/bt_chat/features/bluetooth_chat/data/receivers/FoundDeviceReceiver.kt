@@ -1,4 +1,4 @@
-package com.yilmaz.bt_chat.features.chat.data.chat
+package com.yilmaz.bt_chat.features.bluetooth_chat.data.receivers
 
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
