@@ -4,20 +4,16 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.yilmaz.bt_chat.features.chat.presentation.screen.bluetooth_chat_screen.ScreenBTChat
-import com.yilmaz.bt_chat.features.chat.presentation.screen.scan_devices_screen.ScanDevicesScreen
+import com.yilmaz.bt_chat.features.chat.presentation.screen.home_screen.HomeScreen
 
 @Composable
 fun SetUpNavigationGraph(navHostController: NavHostController) {
     NavHost(
         navController = navHostController,
-        startDestination = NavigationGraph.ScreenScanDevices
+        startDestination = NavigationGraph.ScreenHome
     ) {
-        composable<NavigationGraph.ScreenScanDevices> {
-            ScanDevicesScreen(navHostController)
-        }
-        composable<NavigationGraph.ScreenBTChat> {
-            ScreenBTChat(navHostController)
+        composable<NavigationGraph.ScreenHome> {
+            HomeScreen(navHostController)
         }
     }
 }

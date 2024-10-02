@@ -4,8 +4,5 @@ import kotlinx.serialization.Serializable
 
 class NavigationGraph {
     @Serializable
-    object ScreenScanDevices
-
-    @Serializable
-    object ScreenBTChat
+    object ScreenHome
 }
