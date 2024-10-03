@@ -10,5 +10,6 @@ data class HomeState(
     val isConnecting: Boolean = false,
     val isServerStarted: Boolean = false,
     val errorMessage: String? = null,
-    val messages: List<BluetoothMessageModel> = emptyList()
+    val messages: List<BluetoothMessageModel> = emptyList(),
+    val connectedDeviceName: String = ""
 )

@@ -20,7 +20,7 @@ import com.yilmaz.bt_chat.features.bluetooth_chat.presentation.screen.home_scree
 
 @Composable
 fun HomeScreen(
-    navHostController: NavHostController,
+    @Suppress("UNUSED_PARAMETER") navHostController: NavHostController,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
 
@@ -70,7 +70,7 @@ fun HomeScreen(
                     DevicesScreen(
                         pairedDevices = state.pairedDevices,
                         scannedDevices = state.scannedDevices,
-                        onPairedDevicesItemClick = { viewModel.connectToDevice(it) },
+                        onPairedDevicesItemClick = { device -> viewModel.connectToDevice(device) },
                         onScannedDevicesItemClick = { /* TODO */ },
                         onStartScan = { viewModel.startScan() },
                         onStopScan = { viewModel.stopScan() },

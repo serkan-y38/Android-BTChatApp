@@ -27,7 +27,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import com.yilmaz.bt_chat.features.bluetooth_chat.domain.chat.model.BluetoothMessageModel
@@ -49,11 +48,12 @@ fun ChatScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(start = 16.dp, end = 12.dp, top = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Messages",
+                text = state.connectedDeviceName,
+                style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.weight(1f)
             )
             IconButton(onClick = { onDisconnectDevice() }) {
@@ -67,8 +67,8 @@ fun ChatScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(state.messages) { message ->
                 Column(
@@ -87,7 +87,7 @@ fun ChatScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             TextField(
@@ -96,18 +96,21 @@ fun ChatScreen(
                 modifier = Modifier.weight(1f),
                 placeholder = {
                     Text(text = "Message")
+                },
+                trailingIcon = {
+                    IconButton(onClick = {
+                        onSendMessage(message.value)
+                        message.value = ""
+                        keyboardController?.hide()
+                    }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.Send,
+                            contentDescription = "Send message"
+                        )
+                    }
                 }
             )
-            IconButton(onClick = {
-                onSendMessage(message.value)
-                message.value = ""
-                keyboardController?.hide()
-            }) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.Send,
-                    contentDescription = "Send message"
-                )
-            }
+
         }
     }
 }
@@ -121,17 +124,17 @@ fun MessageItem(
         modifier = modifier
             .clip(
                 RoundedCornerShape(
-                    topStart = if (message.isFromLocalUser) 15.dp else 0.dp,
-                    topEnd = 15.dp,
-                    bottomStart = 15.dp,
-                    bottomEnd = if (message.isFromLocalUser) 0.dp else 15.dp
+                    topStart = if (message.isFromLocalUser) 16.dp else 0.dp,
+                    topEnd = 16.dp,
+                    bottomStart = 16.dp,
+                    bottomEnd = if (message.isFromLocalUser) 0.dp else 16.dp
                 )
             )
             .background(
                 color = if (message.isFromLocalUser) MaterialTheme.colorScheme.primary
-                else MaterialTheme.colorScheme.surfaceContainerHigh
+                else MaterialTheme.colorScheme.secondaryContainer
             )
-            .padding(16.dp)
+            .padding(12.dp)
     ) {
         Log.i(
             "sender -> message",
@@ -139,7 +142,6 @@ fun MessageItem(
         )
         Text(
             text = message.message,
-            color = Color.Black,
             modifier = Modifier.widthIn(max = 250.dp)
         )
     }

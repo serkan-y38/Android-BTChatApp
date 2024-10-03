@@ -94,7 +94,9 @@ class HomeViewModel @Inject constructor(
             it.copy(
                 isConnecting = false,
                 isConnected = false,
-                isServerStarted = false
+                isServerStarted = false,
+                errorMessage = null,
+                connectedDeviceName = ""
             )
         }
     }
@@ -115,13 +117,14 @@ class HomeViewModel @Inject constructor(
     private fun Flow<ConnectionResult>.listen(): Job {
         return onEach { result ->
             when (result) {
-                ConnectionResult.ConnectionEstablished -> {
+                is ConnectionResult.ConnectionEstablished -> {
                     _state.update {
                         it.copy(
                             isConnected = true,
                             isConnecting = false,
                             isServerStarted = false,
-                            errorMessage = null
+                            errorMessage = null,
+                            connectedDeviceName = result.connectedDeviceName
                         )
                     }
                 }

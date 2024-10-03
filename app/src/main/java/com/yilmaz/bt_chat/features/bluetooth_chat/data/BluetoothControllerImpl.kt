@@ -132,9 +132,13 @@ class BluetoothControllerImpl(
                     null
                 }
 
-                emit(ConnectionResult.ConnectionEstablished)
-
                 currentClientSocket?.let { socket ->
+                    emit(
+                        ConnectionResult.ConnectionEstablished(
+                            currentClientSocket!!.remoteDevice.name
+                        )
+                    )
+
                     val service = BluetoothDataTransferService(socket)
 
                     currentServerSocket?.close()
@@ -168,7 +172,11 @@ class BluetoothControllerImpl(
             currentClientSocket?.let { socket ->
                 try {
                     socket.connect()
-                    emit(ConnectionResult.ConnectionEstablished)
+                    emit(
+                        ConnectionResult.ConnectionEstablished(
+                            currentClientSocket!!.remoteDevice.name
+                        )
+                    )
 
                     BluetoothDataTransferService(socket).also { service ->
                         dataTransferService = service

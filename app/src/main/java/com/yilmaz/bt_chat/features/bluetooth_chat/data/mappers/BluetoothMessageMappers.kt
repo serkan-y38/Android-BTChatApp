@@ -5,13 +5,12 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 fun jsonToBluetoothMessageModel(json: String): BluetoothMessageModel {
-    return Json.decodeFromString<BluetoothMessageModel>(json).also {
-        BluetoothMessageModel(
-            message = it.message,
-            senderName = it.senderName,
-            isFromLocalUser = false
-        )
-    }
+    val m: BluetoothMessageModel = Json.decodeFromString(json)
+    return BluetoothMessageModel(
+        message = m.message,
+        senderName = m.senderName,
+        isFromLocalUser = false
+    )
 }
 
 fun messageModelToByteArray(model: BluetoothMessageModel): ByteArray {
