@@ -15,6 +15,7 @@ import com.yilmaz.bt_chat.features.bluetooth_chat.data.mappers.toBluetoothDevice
 import com.yilmaz.bt_chat.features.bluetooth_chat.data.mappers.messageModelToByteArray
 import com.yilmaz.bt_chat.features.bluetooth_chat.data.receivers.BluetoothStateReceiver
 import com.yilmaz.bt_chat.features.bluetooth_chat.data.receivers.FoundDeviceReceiver
+import com.yilmaz.bt_chat.features.bluetooth_chat.data.receivers.PairDeviceReceiver
 import com.yilmaz.bt_chat.features.bluetooth_chat.domain.chat.BluetoothController
 import com.yilmaz.bt_chat.features.bluetooth_chat.domain.chat.model.BluetoothDeviceModel
 import com.yilmaz.bt_chat.features.bluetooth_chat.domain.chat.model.BluetoothMessageModel
@@ -88,12 +89,12 @@ class BluetoothControllerImpl(
         onStateChanged = { isConnected, bluetoothDevice ->
             if (bluetoothAdapter?.bondedDevices?.contains(bluetoothDevice) == true) {
                 _isConnected.update { isConnected }
-            } else {
-                CoroutineScope(Dispatchers.IO).launch {
-                    _errors.emit("Can't connect to a non-paired device.")
-                }
             }
         }
+    )
+
+    private val pairDeviceReceiver = PairDeviceReceiver(
+        onPairRequest = {}
     )
 
     init {
@@ -105,12 +106,32 @@ class BluetoothControllerImpl(
         if (!hasBluetoothScanPermission()) return
         registerFoundDeviceReceiver()
         updatePairedDevices()
+        registerPairDeviceReceiver()
         bluetoothAdapter?.startDiscovery()
     }
 
     override fun stopScan() {
         if (!hasBluetoothScanPermission()) return
         bluetoothAdapter?.cancelDiscovery()
+    }
+
+    override fun pair(address: String) {
+        if (!hasBluetoothConnectPermission()) return
+
+        val device = bluetoothAdapter?.getRemoteDevice(address)
+        device?.let {
+            try {
+                device.createBond()
+            } catch (e: Exception) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    _errors.emit("Failed to pair with device: ${e.message}")
+                }
+            }
+        } ?: run {
+            CoroutineScope(Dispatchers.IO).launch {
+                _errors.emit("Device not found with address: $address")
+            }
+        }
     }
 
     override fun startBluetoothServer(): Flow<ConnectionResult> {
@@ -201,6 +222,7 @@ class BluetoothControllerImpl(
     override fun release() {
         context.unregisterReceiver(foundDeviceReceiver)
         context.unregisterReceiver(bluetoothStateReceiver)
+        context.unregisterReceiver(pairDeviceReceiver)
         closeConnection()
     }
 
@@ -251,6 +273,13 @@ class BluetoothControllerImpl(
         context.registerReceiver(
             foundDeviceReceiver,
             IntentFilter(BluetoothDevice.ACTION_FOUND)
+        )
+    }
+
+    private fun registerPairDeviceReceiver() {
+        context.registerReceiver(
+            pairDeviceReceiver,
+            IntentFilter(BluetoothDevice.ACTION_PAIRING_REQUEST)
         )
     }
 

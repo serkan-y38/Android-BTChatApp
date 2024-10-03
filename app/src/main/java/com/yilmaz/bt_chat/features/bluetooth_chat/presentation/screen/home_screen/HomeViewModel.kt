@@ -49,6 +49,10 @@ class HomeViewModel @Inject constructor(
         getErrors()
     }
 
+    fun pair(address: String) {
+        btController.pair(address)
+    }
+
     private fun isConnected() {
         btController.isConnected.onEach { isConnected ->
             _state.update { it.copy(isConnected = isConnected) }

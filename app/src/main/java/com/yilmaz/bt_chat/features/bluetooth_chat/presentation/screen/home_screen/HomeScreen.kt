@@ -1,17 +1,18 @@
 package com.yilmaz.bt_chat.features.bluetooth_chat.presentation.screen.home_screen
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yilmaz.bt_chat.features.bluetooth_chat.presentation.screen.home_screen.components.ChatScreen
 import com.yilmaz.bt_chat.features.bluetooth_chat.presentation.screen.home_screen.components.DevicesScreen
@@ -23,21 +24,21 @@ fun HomeScreen(
     @Suppress("UNUSED_PARAMETER") navHostController: NavHostController,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-
-    val context = LocalContext.current
     val state by viewModel.state.collectAsState()
+
+    val hostState = remember {
+        SnackbarHostState()
+    }
 
     LaunchedEffect(key1 = state.errorMessage) {
         state.errorMessage?.let { message ->
-            Toast.makeText(
-                context,
-                message,
-                Toast.LENGTH_LONG
-            ).show()
+            hostState.showSnackbar(message)
         }
     }
 
-    Scaffold {
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = hostState) }
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -71,7 +72,7 @@ fun HomeScreen(
                         pairedDevices = state.pairedDevices,
                         scannedDevices = state.scannedDevices,
                         onPairedDevicesItemClick = { device -> viewModel.connectToDevice(device) },
-                        onScannedDevicesItemClick = { /* TODO */ },
+                        onScannedDevicesItemClick = { device -> viewModel.pair(device.address) },
                         onStartScan = { viewModel.startScan() },
                         onStopScan = { viewModel.stopScan() },
                         onStartServer = {

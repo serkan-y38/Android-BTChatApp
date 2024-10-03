@@ -18,6 +18,8 @@ interface BluetoothController {
 
     fun release()
 
+    fun pair(address: String)
+
     fun startBluetoothServer(): Flow<ConnectionResult>
 
     fun connectToDevice(device: BluetoothDeviceModel): Flow<ConnectionResult>
